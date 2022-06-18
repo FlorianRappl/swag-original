@@ -35,22 +35,27 @@ jobs:
           cd accountdetails
           npm i
           npm run build
+          mkdir ../appshell/dist/accountdetails
           cp -r dist/* ../appshell/dist/accountdetails
           cd ../catalogue
           npm i
           npm run build
+          mkdir ../appshell/dist/catalogue
           cp -r dist/* ../appshell/dist/catalogue
           cd ../myaccount
           npm i
           npm run build
+          mkdir ../appshell/dist/myaccount
           cp -r dist/* ../appshell/dist/myaccount
           cd ../paymentdetails
           npm i
           npm run build
+          mkdir ../appshell/dist/paymentdetails
           cp -r dist/* ../appshell/dist/paymentdetails
           cd ../signin
           npm i
           npm run build
+          mkdir ../appshell/dist/signin
           cp -r dist/* ../appshell/dist/signin
           cd ../..
       - name: Deploy Website
