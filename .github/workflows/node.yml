@@ -1,0 +1,61 @@
+name: Publish Demo
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: "14.x"
+          registry-url: "https://registry.npmjs.org"
+      - name: Install gh-pages
+        run: |
+          npm install -g gh-pages@3.0.0
+      - name: Install App Shell Dependencies
+        run: |
+          cd appshell
+          npm i
+          cd ..
+      - name: Build App Shell
+        run: |
+          cd appshell
+          npm run build
+          echo "swag-ecommerce-modulefederation.samples.piral.cloud" > dist/CNAME
+          cp dist/index.html dist/404.html
+          cd ..
+      - name: Install and Build Modules
+        run: |
+          cd accountdetails
+          npm i
+          npm run build
+          cp -r dist/* ../appshell/dist/accountdetails
+          cd ../catalogue
+          npm i
+          npm run build
+          cp -r dist/* ../appshell/dist/catalogue
+          cd ../myaccount
+          npm i
+          npm run build
+          cp -r dist/* ../appshell/dist/myaccount
+          cd ../paymentdetails
+          npm i
+          npm run build
+          cp -r dist/* ../appshell/dist/paymentdetails
+          cd ../signin
+          npm i
+          npm run build
+          cp -r dist/* ../appshell/dist/signin
+          cd ../..
+      - name: Deploy Website
+        run: |
+          git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+          gh-pages -d "appshell/dist" -u "github-actions-bot <support+actions@github.com>"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
